@@ -11,6 +11,15 @@ def createFood():
     food = Food(Foodcolor, (randint(0, WIDTH) // cube_size) * cube_size, (randint(0, HEIGHT) // cube_size) * cube_size)
     foodlist.append(food)
 
+def eat_food():
+    pass
+
+def touch_obstacle():
+    global obstaclelist,snake
+    for i in obstaclelist:
+        if snake.head == [i.x,i.y]:
+            return True
+    return False
 
 # initialization 初始化，用来生成各种基本元素
 def initGame():
@@ -44,6 +53,7 @@ def initGame():
 
 def updateLogic():
     global snake, foodlist,food_number,game_time,timing_mode
+    global health_point,delay_time
     for i in range(food_number):
         # if [foodlist[i].x, foodlist[i].y] in snake.body:
 
@@ -60,14 +70,18 @@ def updateLogic():
 
     if snake.is_overlap == False:
         snake.game_over_overlap()
-    game_time += 0.1
+    game_time += delay_time/1000
     if timing_mode and game_time >= stop_time:
+        snake.game_start = False
+    if touch_obstacle():
+        health_point -= 1
+    if health_point == 0:
         snake.game_start = False
 
 
 def updateView(screen):
     global cube, food, foodlist, food_number, snake, background,myFont
-    global obstaclelist,obstacle_color,obstacle_number,game_time
+    global obstaclelist,obstacle_color,obstacle_number,game_time,health_point
 
     # surface1.blit(surface2,location)
     screen.blit(background, ([0, 0]))
@@ -90,19 +104,23 @@ def updateView(screen):
 
     testSur = myFont.render('time: %ds' % int(game_time), True, (255, 255, 255))
     screen.blit(testSur, [120, 10])
+
+    testSur = myFont.render('HP: %d' % health_point, True, (255, 255, 255))
+    screen.blit(testSur, [220, 10])
     # screen.blit(cube,(food.x,food.y))
     cube.fill(obstacle_color)
     for i in range(obstacle_number):
         screen.blit(cube,(obstaclelist[i].x,obstaclelist[i].y))
 
 def mainLoop():
-    global snake
+    global snake,delay_time
     initGame()
     screen = pygame.display.set_mode([WIDTH, HEIGHT])
     while True:
         # pygame.time.delay(延迟的时间，单位是毫秒)
         # pygame.time.delay(int(400/snake.speed))
-        pygame.time.delay(100)
+        # delay_time = 100
+        pygame.time.delay(delay_time)
 
         # pygame.event.get() 获取事件队列
         for event in pygame.event.get():

@@ -16,7 +16,7 @@ background = None
 myFont = None
 
 obstaclelist = []
-obstacle_number = 0
+obstacle_number = 100
 obstacle_color = (100,100,100)
 speed = 5
 
@@ -26,3 +26,6 @@ game_start = True
 cross_side_mode = True
 overlap_mode = False
 timing_mode = True
+
+health_point = 4
+delay_time = 50
